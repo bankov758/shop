@@ -1,0 +1,21 @@
+package entities;
+
+public class ItemQuantity {
+
+    private Item item;
+
+    private double quantity;
+
+    public ItemQuantity(Item item, double quantity) {
+        this.item = item;
+        this.quantity = quantity;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public double getQuantity() {
+        return quantity;
+    }
+}
