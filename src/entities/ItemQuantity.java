@@ -18,4 +18,8 @@ public class ItemQuantity {
     public double getQuantity() {
         return quantity;
     }
+
+    public void addQuantity(double quantity) {
+        quantity += quantity;
+    }
 }

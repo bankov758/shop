@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.List;
+import java.util.Map;
 
 public class Shop {
 
@@ -10,19 +11,11 @@ public class Shop {
 
     private List<Cashier> cashiers;
 
-    private List<ItemQuantity> deliveredItems;
+    private Map<Integer, ItemQuantity> deliveredItems;
 
-    private List<ItemQuantity> soldItems;
+    private Map<Integer, ItemQuantity> soldItems;
 
     private List<Receipt> receipts;
-
-    //todo
-    /*
-     * Хранителните и нехранителните стоки имат различен % надценка, който се определя в магазина.
-     * Ако срокът на годност наближава, т.е. остават по-малко от даден брой дни до изтичането му,
-     * продажната цена на стоката се намалява с определен %. Броят на дните до изтичането на срока
-     * и % намаление са различни за всеки магазин. Стоки с изтекъл срок на годност не трябва да се продават
-     * */
 
     private double foodMarkupPercent;
 
@@ -59,19 +52,19 @@ public class Shop {
         this.cashiers = cashiers;
     }
 
-    public List<ItemQuantity> getDeliveredItems() {
+    public Map<Integer, ItemQuantity> getDeliveredItems() {
         return deliveredItems;
     }
 
-    public void setDeliveredItems(List<ItemQuantity> deliveredItems) {
+    public void setDeliveredItems(Map<Integer, ItemQuantity> deliveredItems) {
         this.deliveredItems = deliveredItems;
     }
 
-    public List<ItemQuantity> getSoldItems() {
+    public Map<Integer, ItemQuantity> getSoldItems() {
         return soldItems;
     }
 
-    public void setSoldItems(List<ItemQuantity> soldItems) {
+    public void setSoldItems(Map<Integer, ItemQuantity> soldItems) {
         this.soldItems = soldItems;
     }
 
@@ -83,6 +76,50 @@ public class Shop {
         this.receipts = receipts;
     }
 
+    public double getFoodMarkupPercent() {
+        return foodMarkupPercent;
+    }
+
+    public void setFoodMarkupPercent(double foodMarkupPercent) {
+        this.foodMarkupPercent = foodMarkupPercent;
+    }
+
+    public double getFoodDiscountPercent() {
+        return foodDiscountPercent;
+    }
+
+    public void setFoodDiscountPercent(double foodDiscountPercent) {
+        this.foodDiscountPercent = foodDiscountPercent;
+    }
+
+    public double getNonFoodMarkupPercent() {
+        return nonFoodMarkupPercent;
+    }
+
+    public void setNonFoodMarkupPercent(double nonFoodMarkupPercent) {
+        this.nonFoodMarkupPercent = nonFoodMarkupPercent;
+    }
+
+    public double getNonFoodDiscountPercent() {
+        return nonFoodDiscountPercent;
+    }
+
+    public void setNonFoodDiscountPercent(double nonFoodDiscountPercent) {
+        this.nonFoodDiscountPercent = nonFoodDiscountPercent;
+    }
+
+    public void addDeliveredItem(ItemQuantity itemQuantity) {
+        Item itemToAdd = itemQuantity.getItem();
+        deliveredItems.computeIfAbsent(itemToAdd.getId(), itemQty -> new ItemQuantity(itemToAdd, 0));
+        deliveredItems.get(itemToAdd.getId()).addQuantity(itemQuantity.getQuantity());
+    }
+
+    public void addSoldItem(ItemQuantity itemQuantity) {
+        Item itemToAdd = itemQuantity.getItem();
+        soldItems.computeIfAbsent(itemToAdd.getId(), itemQty -> new ItemQuantity(itemToAdd, 0));
+        soldItems.get(itemToAdd.getId()).addQuantity(itemQuantity.getQuantity());
+    }
+
     public double getCashierSalaries() {
         return cashiers
                 .stream()
@@ -92,8 +129,21 @@ public class Shop {
 
     public double getDeliveredItemsExpense() {
         return deliveredItems
+                .values()
                 .stream()
                 .mapToDouble(itemQty -> itemQty.getItem().getDeliveryPrice() * itemQty.getQuantity())
                 .sum();
     }
+
+    public double getSoldItemsIncome() {
+        return receipts
+                .stream()
+                .mapToDouble(Receipt::getTotalCost)
+                .sum();
+    }
+
+    public double getShopMonthlyIncome() {
+        return getSoldItemsIncome() - getDeliveredItemsExpense() - getSoldItemsIncome();
+    }
+
 }

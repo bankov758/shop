@@ -1,6 +1,9 @@
 package entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class Receipt {
@@ -18,7 +21,8 @@ public class Receipt {
     public Receipt() {
     }
 
-    public Receipt(int id, Cashier cashier, LocalDateTime purchaseDate, List<ItemQuantity> itemQuantities, Shop shop) {
+    public Receipt(int id, Cashier cashier, LocalDateTime purchaseDate,
+                   List<ItemQuantity> itemQuantities, Shop shop) {
         this.id = id;
         this.cashier = cashier;
         this.purchaseDate = purchaseDate;
@@ -66,8 +70,37 @@ public class Receipt {
         this.shop = shop;
     }
 
-    public double getTotalCost(){
-        //delcost + delCost*markup - (perChaseDate - delDate) * discount
-        return itemQuantities.stream().mapToDouble()
+    /**
+     * Calculates the total cost of items based on their delivery price, markup, and discount.
+     * This calculation considers the number of days between the item's expiration date and the purchase date.
+     * The total cost adjusts for each item's category (food or non-food), applying the relevant markup percentage
+     * and discount based on the days until expiration. Markup and discounts are defined separately for food
+     * and non-food categories in the {@link Shop} class.
+     *
+     * @return the calculated total cost of all items, factoring in delivery price, markup,
+     * and discounts affected by the number of days between the expiration date and the purchase date.
+     */
+    public double getTotalCost() {
+        double totalCost = 0;
+        for (ItemQuantity itemQuantity : itemQuantities) {
+            Item item = itemQuantity.getItem();
+            double quantity = itemQuantity.getQuantity();
+            double markup = item.getCategory() == ItemCategory.FOOD ? shop.getFoodMarkupPercent() : shop.getNonFoodMarkupPercent();
+            double discount = item.getCategory() == ItemCategory.FOOD ? shop.getFoodDiscountPercent() : shop.getNonFoodDiscountPercent();
+            LocalDate expirationDate = item.getExpirationDate()
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            long daysBetween = ChronoUnit.DAYS.between(expirationDate, purchaseDate);
+            totalCost += (item.getDeliveryPrice() + item.getDeliveryPrice() * markup - daysBetween * discount) * quantity;
+        }
+        return totalCost;
     }
+
+    private void addSoldItemsTosShop() {
+        for (ItemQuantity itemQuantity : itemQuantities) {
+            shop.addSoldItem(itemQuantity);
+        }
+    }
+
 }
