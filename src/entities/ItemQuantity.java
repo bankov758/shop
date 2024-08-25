@@ -20,6 +20,6 @@ public class ItemQuantity {
     }
 
     public void addQuantity(double quantity) {
-        quantity += quantity;
+        this.quantity += quantity;
     }
 }
