@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,13 +11,13 @@ public class Shop {
 
     private String name;
 
-    private List<Cashier> cashiers;
+    private List<Cashier> cashiers = new ArrayList<Cashier>();
 
-    private Map<Integer, ItemQuantity> deliveredItems;
+    private Map<Integer, ItemQuantity> deliveredItems = new HashMap<>();
 
-    private Map<Integer, ItemQuantity> soldItems;
+    private Map<Integer, ItemQuantity> soldItems = new HashMap<>();
 
-    private List<Receipt> receipts;
+    private List<Receipt> receipts = new ArrayList<>();
 
     private double foodMarkupPercent;
 
@@ -77,7 +79,7 @@ public class Shop {
     }
 
     public double getFoodMarkupPercent() {
-        return foodMarkupPercent;
+        return foodMarkupPercent / 100;
     }
 
     public void setFoodMarkupPercent(double foodMarkupPercent) {
@@ -85,7 +87,7 @@ public class Shop {
     }
 
     public double getFoodDiscountPercent() {
-        return foodDiscountPercent;
+        return foodDiscountPercent / 100;
     }
 
     public void setFoodDiscountPercent(double foodDiscountPercent) {
@@ -93,7 +95,7 @@ public class Shop {
     }
 
     public double getNonFoodMarkupPercent() {
-        return nonFoodMarkupPercent;
+        return nonFoodMarkupPercent / 100;
     }
 
     public void setNonFoodMarkupPercent(double nonFoodMarkupPercent) {
@@ -101,7 +103,7 @@ public class Shop {
     }
 
     public double getNonFoodDiscountPercent() {
-        return nonFoodDiscountPercent;
+        return nonFoodDiscountPercent / 100;
     }
 
     public void setNonFoodDiscountPercent(double nonFoodDiscountPercent) {
@@ -112,6 +114,15 @@ public class Shop {
         Item itemToAdd = itemQuantity.getItem();
         deliveredItems.computeIfAbsent(itemToAdd.getId(), itemQty -> new ItemQuantity(itemToAdd, 0));
         deliveredItems.get(itemToAdd.getId()).addQuantity(itemQuantity.getQuantity());
+    }
+
+    public void sellItem(int itemId, double quantity) {
+        ItemQuantity availableQuantity = deliveredItems.get(itemId);
+        if (availableQuantity == null || availableQuantity.getQuantity() < quantity) {
+            throw new IllegalArgumentException("Item with id" + itemId + " is out of stock");
+        } else {
+            deliveredItems.get(itemId).reduceQuantity(quantity);
+        }
     }
 
     public void addSoldItem(ItemQuantity itemQuantity) {
@@ -144,6 +155,10 @@ public class Shop {
 
     public double getShopMonthlyIncome() {
         return getSoldItemsIncome() - getDeliveredItemsExpense() - getSoldItemsIncome();
+    }
+
+    public void addReceipts(Receipt receipt){
+        receipts.add(receipt);
     }
 
 }

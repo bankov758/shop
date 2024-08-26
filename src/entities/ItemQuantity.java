@@ -22,4 +22,8 @@ public class ItemQuantity {
     public void addQuantity(double quantity) {
         this.quantity += quantity;
     }
+
+    public void reduceQuantity(double quantity) {
+        this.quantity -= quantity;
+    }
 }

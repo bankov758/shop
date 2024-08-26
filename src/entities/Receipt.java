@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Receipt {
@@ -14,11 +15,17 @@ public class Receipt {
 
     private LocalDateTime purchaseDate;
 
-    private List<ItemQuantity> itemQuantities;
+    private List<ItemQuantity> itemQuantities = new ArrayList<>();
 
     private Shop shop;
 
     public Receipt() {
+    }
+
+    public Receipt(int id, Cashier cashier, Shop shop) {
+        this.id = id;
+        this.cashier = cashier;
+        this.shop = shop;
     }
 
     public Receipt(int id, Cashier cashier, LocalDateTime purchaseDate,
@@ -85,8 +92,10 @@ public class Receipt {
         for (ItemQuantity itemQuantity : itemQuantities) {
             Item item = itemQuantity.getItem();
             double quantity = itemQuantity.getQuantity();
-            double markup = item.getCategory() == ItemCategory.FOOD ? shop.getFoodMarkupPercent() : shop.getNonFoodMarkupPercent();
-            double discount = item.getCategory() == ItemCategory.FOOD ? shop.getFoodDiscountPercent() : shop.getNonFoodDiscountPercent();
+            double markup = item.getCategory() == ItemCategory.FOOD ?
+                    shop.getFoodMarkupPercent() : shop.getNonFoodMarkupPercent();
+            double discount = item.getCategory() == ItemCategory.FOOD ?
+                    shop.getFoodDiscountPercent() : shop.getNonFoodDiscountPercent();
             LocalDate expirationDate = item.getExpirationDate()
                     .toInstant()
                     .atZone(ZoneId.systemDefault())
@@ -97,10 +106,14 @@ public class Receipt {
         return totalCost;
     }
 
-    private void addSoldItemsTosShop() {
+    public void addSoldItemsTosShop() {
         for (ItemQuantity itemQuantity : itemQuantities) {
             shop.addSoldItem(itemQuantity);
         }
+    }
+
+    public void addItems(ItemQuantity itemQuantity){
+        itemQuantities.add(itemQuantity);
     }
 
 }
