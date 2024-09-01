@@ -5,6 +5,7 @@ import org.example.entities.Item;
 import org.example.entities.ItemQuantity;
 import org.example.entities.Shop;
 import org.example.services.MockDataGenerator;
+import org.example.services.ReceiptPrinter;
 import org.example.services.SellingEngine;
 
 import java.util.List;
@@ -19,10 +20,12 @@ public class Main {
 
         Item milk = itemQuantities.get(0).getItem();
         kasa1.sell(new ItemQuantity(milk, 5));
+        //kasa1.pay();
+        Item meds = itemQuantities.get(2).getItem();
+        kasa1.sell(new ItemQuantity(meds, 3));
+        kasa1.pay();
 
-        System.out.printf(String.valueOf(kasa1.pay()));
-
-        System.out.printf("");
+        ReceiptPrinter.printReceipts(lidl.getReceipts());
     }
 
 }

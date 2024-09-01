@@ -90,20 +90,23 @@ public class Receipt {
     public double getTotalCost() {
         double totalCost = 0;
         for (ItemQuantity itemQuantity : itemQuantities) {
-            Item item = itemQuantity.getItem();
-            double quantity = itemQuantity.getQuantity();
-            double markup = item.getCategory() == ItemCategory.FOOD ?
-                    shop.getFoodMarkupPercent() : shop.getNonFoodMarkupPercent();
-            double discount = item.getCategory() == ItemCategory.FOOD ?
-                    shop.getFoodDiscountPercent() : shop.getNonFoodDiscountPercent();
-            LocalDate expirationDate = item.getExpirationDate()
-                    .toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
-            long daysBetween = ChronoUnit.DAYS.between(expirationDate, purchaseDate);
-            totalCost += (item.getDeliveryPrice() + item.getDeliveryPrice() * markup - daysBetween * discount) * quantity;
+            totalCost += getItemPrice(itemQuantity) * itemQuantity.getQuantity();
         }
         return totalCost;
+    }
+
+    public double getItemPrice(ItemQuantity itemQuantity) {
+        Item item = itemQuantity.getItem();
+        double markup = item.getCategory() == ItemCategory.FOOD ?
+                shop.getFoodMarkupPercent() : shop.getNonFoodMarkupPercent();
+        double discount = item.getCategory() == ItemCategory.FOOD ?
+                shop.getFoodDiscountPercent() : shop.getNonFoodDiscountPercent();
+        LocalDate expirationDate = item.getExpirationDate()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+        long daysBetween = ChronoUnit.DAYS.between(expirationDate, purchaseDate);
+        return item.getDeliveryPrice() + item.getDeliveryPrice() * markup - daysBetween * discount;
     }
 
     public void addSoldItemsToShop() {
