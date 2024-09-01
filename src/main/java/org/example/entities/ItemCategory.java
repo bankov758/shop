@@ -1,4 +1,4 @@
-package entities;
+package org.example.entities;
 
 public enum ItemCategory {
     FOOD,

@@ -1,6 +1,6 @@
-package services;
+package org.example.services;
 
-import entities.*;
+import org.example.entities.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -25,18 +25,6 @@ public class MockDataGenerator {
         cashiers.add(new Cashier(1, "John Doe", 3000));
         cashiers.add(new Cashier(2, "Jane Smith", 3200));
         shop.setCashiers(cashiers);
-
-//        // Generating mock sold items
-//        Map<Integer, ItemQuantity> soldItems = new HashMap<>();
-//        soldItems.put(1, new ItemQuantity(new Item(1, "Milk", 2.0, 1.5), 80));
-//        soldItems.put(2, new ItemQuantity(new Item(2, "Bread", 1.0, 0.7), 180));
-//        shop.setSoldItems(soldItems);
-
-//        // Generating mock receipts
-//        List<Receipt> receipts = new ArrayList<>();
-//        receipts.add(new Receipt(1, Arrays.asList(new ItemQuantity(new Item(1, "Milk", 2.0, 1.5), 2), new ItemQuantity(new Item(2, "Bread", 1.0, 0.7), 1)), 5.0));
-//        receipts.add(new Receipt(2, Arrays.asList(new ItemQuantity(new Item(1, "Milk", 2.0, 1.5), 1), new ItemQuantity(new Item(2, "Bread", 1.0, 0.7), 3)), 6.0));
-//        shop.setReceipts(receipts);
 
         return shop;
     }

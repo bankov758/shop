@@ -1,12 +1,16 @@
-import entities.Item;
-import entities.ItemQuantity;
-import entities.Shop;
-import services.MockDataGenerator;
-import services.SellingEngine;
+package org.example;
+
+import org.example.entities.Item;
+
+import org.example.entities.ItemQuantity;
+import org.example.entities.Shop;
+import org.example.services.MockDataGenerator;
+import org.example.services.SellingEngine;
 
 import java.util.List;
 
 public class Main {
+
     public static void main(String[] args) {
         Shop lidl = MockDataGenerator.generateMockShop();
         SellingEngine kasa1 = new SellingEngine(lidl, lidl.getCashiers().get(0));
@@ -19,6 +23,6 @@ public class Main {
         System.out.printf(String.valueOf(kasa1.pay()));
 
         System.out.printf("");
-
     }
+
 }

@@ -1,4 +1,4 @@
-package entities;
+package org.example.entities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -106,7 +106,7 @@ public class Receipt {
         return totalCost;
     }
 
-    public void addSoldItemsTosShop() {
+    public void addSoldItemsToShop() {
         for (ItemQuantity itemQuantity : itemQuantities) {
             shop.addSoldItem(itemQuantity);
         }
