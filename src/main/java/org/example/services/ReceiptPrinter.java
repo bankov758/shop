@@ -34,6 +34,7 @@ public class ReceiptPrinter {
 
     public static void printReceipt(Receipt receipt) {
         fileCounter++;
+        ReceiptService receiptService = new ReceiptService();
         try (PdfWriter writer = new PdfWriter(FILE_PATH + fileCounter + FILE_EXT)) {
             try (PdfDocument pdf = new PdfDocument(writer)) {
                 try (Document document = new Document(pdf)) {
@@ -49,10 +50,10 @@ public class ReceiptPrinter {
                     for (ItemQuantity itemQuantity : receipt.getItemQuantities()) {
                         document.add(new Paragraph(itemQuantity.getItem().getName() +
                                 "   " +
-                                String.format("%.2f lv", receipt.getItemPrice(itemQuantity)) +
+                                String.format("%.2f lv", receiptService.getItemPrice(itemQuantity, receipt)) +
                                 " X " + itemQuantity.getQuantity()));
                     }
-                    document.add(new Paragraph("Total Cost: " +  String.format("%.2f lv", receipt.getTotalCost())));
+                    document.add(new Paragraph("Total Cost: " +  String.format("%.2f lv", receiptService.getTotalCost(receipt))));
                     document.add(new Paragraph("Purchase Date: " + receipt.getPurchaseDate().format(formatter)));
                 }
             }

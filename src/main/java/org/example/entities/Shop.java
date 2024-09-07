@@ -11,7 +11,7 @@ public class Shop {
 
     private String name;
 
-    private List<Cashier> cashiers = new ArrayList<Cashier>();
+    private List<Cashier> cashiers = new ArrayList<>();
 
     private Map<Integer, ItemQuantity> deliveredItems = new HashMap<>();
 
@@ -108,57 +108,6 @@ public class Shop {
 
     public void setNonFoodDiscountPercent(double nonFoodDiscountPercent) {
         this.nonFoodDiscountPercent = nonFoodDiscountPercent;
-    }
-
-    public void addDeliveredItem(ItemQuantity itemQuantity) {
-        Item itemToAdd = itemQuantity.getItem();
-        deliveredItems.computeIfAbsent(itemToAdd.getId(), itemQty -> new ItemQuantity(itemToAdd, 0));
-        deliveredItems.get(itemToAdd.getId()).addQuantity(itemQuantity.getQuantity());
-    }
-
-    public void sellItem(int itemId, double quantity) {
-        ItemQuantity availableQuantity = deliveredItems.get(itemId);
-        if (availableQuantity == null || availableQuantity.getQuantity() < quantity) {
-            throw new IllegalArgumentException("Item with id" + itemId + " is out of stock");
-        } else {
-            deliveredItems.get(itemId).reduceQuantity(quantity);
-        }
-    }
-
-    public void addSoldItem(ItemQuantity itemQuantity) {
-        Item itemToAdd = itemQuantity.getItem();
-        soldItems.computeIfAbsent(itemToAdd.getId(), itemQty -> new ItemQuantity(itemToAdd, 0));
-        soldItems.get(itemToAdd.getId()).addQuantity(itemQuantity.getQuantity());
-    }
-
-    public double getCashierSalaries() {
-        return cashiers
-                .stream()
-                .mapToDouble(Cashier::getSalary)
-                .sum();
-    }
-
-    public double getDeliveredItemsExpense() {
-        return deliveredItems
-                .values()
-                .stream()
-                .mapToDouble(itemQty -> itemQty.getItem().getDeliveryPrice() * itemQty.getQuantity())
-                .sum();
-    }
-
-    public double getSoldItemsIncome() {
-        return receipts
-                .stream()
-                .mapToDouble(Receipt::getTotalCost)
-                .sum();
-    }
-
-    public double getShopMonthlyIncome() {
-        return getSoldItemsIncome() - getDeliveredItemsExpense() - getSoldItemsIncome();
-    }
-
-    public void addReceipts(Receipt receipt){
-        receipts.add(receipt);
     }
 
 }

@@ -4,9 +4,9 @@ import org.example.entities.Item;
 
 import org.example.entities.ItemQuantity;
 import org.example.entities.Shop;
-import org.example.services.MockDataGenerator;
+import org.example.helpers.MockDataGenerator;
 import org.example.services.ReceiptPrinter;
-import org.example.services.SellingEngine;
+import org.example.services.ShopService;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         Shop lidl = MockDataGenerator.generateMockShop();
-        SellingEngine kasa1 = new SellingEngine(lidl, lidl.getCashiers().get(0));
+        ShopService kasa1 = new ShopService(lidl, lidl.getCashiers().get(0));
         List<ItemQuantity> itemQuantities = MockDataGenerator.generateMockDeliveredItems();
         kasa1.processDelivery(itemQuantities);
 
