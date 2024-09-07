@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.entities.*;
+import org.example.exceptions.ItemOutOfStockException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,10 +18,20 @@ public class ShopService {
 
     private static int receiptId = 1;
 
+    public ShopService(Shop shop, Cashier cashier, ReceiptService receiptService) {
+        this.shop = shop;
+        this.cashier = cashier;
+        this.receiptService = receiptService;
+    }
+
     public ShopService(Shop shop, Cashier cashier) {
         this.shop = shop;
         this.cashier = cashier;
-        receiptService = new ReceiptService();
+        this.receiptService = new ReceiptService();
+    }
+
+    public Receipt getCurrentReceipt() {
+        return currentReceipt;
     }
 
     public void processDelivery(List<ItemQuantity> itemQuantities) {
@@ -28,20 +39,18 @@ public class ShopService {
     }
 
     public void sell(ItemQuantity itemQuantity) {
-        if (currentReceipt == null) {
+        if (getCurrentReceipt() == null) {
             currentReceipt = new Receipt(receiptId++, cashier, shop);
         }
-        receiptService.addItems(itemQuantity, currentReceipt);
+        receiptService.addItems(itemQuantity, getCurrentReceipt());
         sellItem(itemQuantity.getItem().getId(), itemQuantity.getQuantity());
     }
 
-    public double pay() {
-        addSoldItemsToShop(currentReceipt);
-        currentReceipt.setPurchaseDate(LocalDateTime.now());
-        double totalCost = receiptService.getTotalCost(currentReceipt);
-        addReceipts(currentReceipt);
+    public void pay() {
+        addSoldItemsToShop(getCurrentReceipt());
+        getCurrentReceipt().setPurchaseDate(LocalDateTime.now());
+        addReceiptToShop(getCurrentReceipt());
         currentReceipt = null;
-        return totalCost;
     }
 
     public void addDeliveredItem(ItemQuantity itemQuantity) {
@@ -53,7 +62,7 @@ public class ShopService {
     public void sellItem(int itemId, double quantity) {
         ItemQuantity availableQuantity = shop.getDeliveredItems().get(itemId);
         if (availableQuantity == null || availableQuantity.getQuantity() < quantity) {
-            throw new IllegalArgumentException("Item with id" + itemId + " is out of stock");
+            throw new ItemOutOfStockException(itemId);
         } else {
             shop.getDeliveredItems().get(itemId).reduceQuantity(quantity);
         }
@@ -88,10 +97,10 @@ public class ShopService {
     }
 
     public double getShopMonthlyIncome() {
-        return getSoldItemsIncome() - getDeliveredItemsExpense() - getSoldItemsIncome();
+        return getSoldItemsIncome() - getDeliveredItemsExpense() - getCashierSalaries();
     }
 
-    public void addReceipts(Receipt receipt) {
+    public void addReceiptToShop(Receipt receipt) {
         shop.getReceipts().add(receipt);
     }
 
