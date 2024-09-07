@@ -7,6 +7,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.TextAlignment;
 import org.example.entities.ItemQuantity;
 import org.example.entities.Receipt;
+import org.example.services.interfaces.ReceiptService;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -34,7 +35,7 @@ public class ReceiptPrinter {
 
     public static void printReceipt(Receipt receipt) {
         fileCounter++;
-        ReceiptService receiptService = new ReceiptService();
+        ReceiptService receiptService = new ReceiptServiceImpl();
         try (PdfWriter writer = new PdfWriter(FILE_PATH + fileCounter + FILE_EXT)) {
             try (PdfDocument pdf = new PdfDocument(writer)) {
                 try (Document document = new Document(pdf)) {

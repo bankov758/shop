@@ -1,7 +1,9 @@
 import org.example.entities.*;
 import org.example.exceptions.ItemOutOfStockException;
-import org.example.services.ReceiptService;
-import org.example.services.ShopService;
+import org.example.services.interfaces.ReceiptService;
+import org.example.services.ReceiptServiceImpl;
+import org.example.services.interfaces.ShopService;
+import org.example.services.ShopServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class ShopServiceTests {
+public class ShopServiceImplTests {
 
     private ShopService shopService;
     private Shop shop;
@@ -25,7 +27,7 @@ public class ShopServiceTests {
     @BeforeEach
     void setup() {
         shop = new Shop();
-        shopService = spy(new ShopService(shop, new Cashier()));
+        shopService = spy(new ShopServiceImpl(shop, new Cashier()));
     }
 
     @Test
@@ -228,11 +230,11 @@ public class ShopServiceTests {
         // Arrange
         Shop shop = new Shop();
         shop.setReceipts(Arrays.asList(new Receipt(), new Receipt(), new Receipt()));
-        ReceiptService receiptService = spy(new ReceiptService());
+        ReceiptService receiptService = spy(new ReceiptServiceImpl());
         doReturn(50.0, 75.0, 25.0)
                 .when(receiptService)
                 .getTotalCost(any(Receipt.class));
-        ShopService service = new ShopService(shop, new Cashier(), receiptService);
+        ShopService service = new ShopServiceImpl(shop, new Cashier(), receiptService);
 
         // Act & Assert
         assertEquals(150.0, service.getSoldItemsIncome());

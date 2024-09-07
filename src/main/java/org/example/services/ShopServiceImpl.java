@@ -2,11 +2,13 @@ package org.example.services;
 
 import org.example.entities.*;
 import org.example.exceptions.ItemOutOfStockException;
+import org.example.services.interfaces.ReceiptService;
+import org.example.services.interfaces.ShopService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ShopService {
+public class ShopServiceImpl implements ShopService {
 
     private final Shop shop;
 
@@ -18,26 +20,29 @@ public class ShopService {
 
     private static int receiptId = 1;
 
-    public ShopService(Shop shop, Cashier cashier, ReceiptService receiptService) {
+    public ShopServiceImpl(Shop shop, Cashier cashier, ReceiptService receiptService) {
         this.shop = shop;
         this.cashier = cashier;
         this.receiptService = receiptService;
     }
 
-    public ShopService(Shop shop, Cashier cashier) {
+    public ShopServiceImpl(Shop shop, Cashier cashier) {
         this.shop = shop;
         this.cashier = cashier;
-        this.receiptService = new ReceiptService();
+        this.receiptService = new ReceiptServiceImpl();
     }
 
+    @Override
     public Receipt getCurrentReceipt() {
         return currentReceipt;
     }
 
+    @Override
     public void processDelivery(List<ItemQuantity> itemQuantities) {
         itemQuantities.forEach(this::addDeliveredItem);
     }
 
+    @Override
     public void sell(ItemQuantity itemQuantity) {
         if (getCurrentReceipt() == null) {
             currentReceipt = new Receipt(receiptId++, cashier, shop);
@@ -46,6 +51,7 @@ public class ShopService {
         sellItem(itemQuantity.getItem().getId(), itemQuantity.getQuantity());
     }
 
+    @Override
     public void pay() {
         addSoldItemsToShop(getCurrentReceipt());
         getCurrentReceipt().setPurchaseDate(LocalDateTime.now());
@@ -53,12 +59,14 @@ public class ShopService {
         currentReceipt = null;
     }
 
+    @Override
     public void addDeliveredItem(ItemQuantity itemQuantity) {
         Item itemToAdd = itemQuantity.getItem();
         shop.getDeliveredItems().computeIfAbsent(itemToAdd.getId(), itemQty -> new ItemQuantity(itemToAdd, 0));
         shop.getDeliveredItems().get(itemToAdd.getId()).addQuantity(itemQuantity.getQuantity());
     }
 
+    @Override
     public void sellItem(int itemId, double quantity) {
         ItemQuantity availableQuantity = shop.getDeliveredItems().get(itemId);
         if (availableQuantity == null || availableQuantity.getQuantity() < quantity) {
@@ -68,12 +76,14 @@ public class ShopService {
         }
     }
 
+    @Override
     public void addSoldItem(ItemQuantity itemQuantity) {
         Item itemToAdd = itemQuantity.getItem();
         shop.getSoldItems().computeIfAbsent(itemToAdd.getId(), itemQty -> new ItemQuantity(itemToAdd, 0));
         shop.getSoldItems().get(itemToAdd.getId()).addQuantity(itemQuantity.getQuantity());
     }
 
+    @Override
     public double getCashierSalaries() {
         return shop.getCashiers()
                 .stream()
@@ -81,6 +91,7 @@ public class ShopService {
                 .sum();
     }
 
+    @Override
     public double getDeliveredItemsExpense() {
         return shop.getDeliveredItems()
                 .values()
@@ -89,6 +100,7 @@ public class ShopService {
                 .sum();
     }
 
+    @Override
     public double getSoldItemsIncome() {
         return shop.getReceipts()
                 .stream()
@@ -96,14 +108,17 @@ public class ShopService {
                 .sum();
     }
 
+    @Override
     public double getShopMonthlyIncome() {
         return getSoldItemsIncome() - getDeliveredItemsExpense() - getCashierSalaries();
     }
 
+    @Override
     public void addReceiptToShop(Receipt receipt) {
         shop.getReceipts().add(receipt);
     }
 
+    @Override
     public void addSoldItemsToShop(Receipt receipt) {
         for (ItemQuantity itemQuantity : receipt.getItemQuantities()) {
             addSoldItem(itemQuantity);
