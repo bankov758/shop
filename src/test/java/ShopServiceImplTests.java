@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 public class ShopServiceImplTests {
 
     private ShopService shopService;
+
     private Shop shop;
 
     @BeforeEach
@@ -68,7 +69,7 @@ public class ShopServiceImplTests {
     @Test
     public void whenSellItemAndCurrentReceiptInitialized_thenSameReceiptIsReturned() {
         // Arrange
-        doNothing().when(shopService).sellItem(anyInt(), anyDouble());
+        doNothing().when(shopService).sellItem(any(ItemQuantity.class));
         Item item = new Item(1, "Test Item", 10.0, ItemCategory.FOOD, new Date());
         ItemQuantity itemQuantity = new ItemQuantity(item, 1);
 
@@ -86,7 +87,7 @@ public class ShopServiceImplTests {
         // Arrange
         Item item = new Item(1, "Test Item", 10.0, ItemCategory.FOOD, new Date());
         ItemQuantity itemQuantity = new ItemQuantity(item, 1);
-        doNothing().when(shopService).sellItem(item.getId(), itemQuantity.getQuantity());
+        doNothing().when(shopService).sellItem(itemQuantity);
 
         // Act
         shopService.sell(itemQuantity);
@@ -100,14 +101,13 @@ public class ShopServiceImplTests {
         // Arrange
         Item item = new Item(1, "Test Item", 10.0, ItemCategory.FOOD, new Date());
         ItemQuantity itemQuantity = new ItemQuantity(item, 1);
-        doNothing().when(shopService).sellItem(item.getId(), itemQuantity.getQuantity());
+        doNothing().when(shopService).sellItem(itemQuantity);
 
         // Act
         shopService.sell(itemQuantity);
 
         // Assert
-        verify(shopService, times(1))
-                .sellItem(item.getId(), itemQuantity.getQuantity());
+        verify(shopService, times(1)).sellItem(itemQuantity);
     }
 
     @Test
@@ -118,8 +118,8 @@ public class ShopServiceImplTests {
         shop.getDeliveredItems().put(1, itemQuantity);
 
         // Act
-        shopService.sellItem(1, 3);
-        shopService.sellItem(1, 3);
+        shopService.sellItem(new ItemQuantity(item, 3));
+        shopService.sellItem(new ItemQuantity(item, 3));
 
         // Assert
         assertEquals(4, shop.getDeliveredItems().get(1).getQuantity());
@@ -129,7 +129,7 @@ public class ShopServiceImplTests {
     public void whenSellItemWithInvalidId_thenItemOutOfStockExceptionIsThrown() {
         // Act & Assert
         assertThrows(ItemOutOfStockException.class, () -> {
-            shopService.sellItem(999, 5);
+            shopService.sellItem(new ItemQuantity(new Item(), 3));
         });
     }
 
@@ -141,7 +141,7 @@ public class ShopServiceImplTests {
 
         // Act & Assert
         assertThrows(ItemOutOfStockException.class, () -> {
-            shopService.sellItem(1, 10);
+            shopService.sellItem(new ItemQuantity(item, 10));
         });
     }
 
@@ -270,7 +270,8 @@ public class ShopServiceImplTests {
         Cashier cashier = new Cashier();
         Item item1 = new Item(1, "Item1", 10.0, null, null);
         Item item2 = new Item(2, "Item2", 20.0, null, null);
-        List<ItemQuantity> itemQuantities = List.of(new ItemQuantity(item1, 2), new ItemQuantity(item2, 3));
+        List<ItemQuantity> itemQuantities = List.of(new ItemQuantity(item1, 2),
+                new ItemQuantity(item2, 3));
         Receipt receipt = new Receipt(1, cashier, LocalDateTime.now(), itemQuantities, shop);
 
         // Act
@@ -284,8 +285,9 @@ public class ShopServiceImplTests {
     @Test
     public void whenPay_thenPurchaseDateIsSetAndReceiptIsReset() {
         // Arrange
-        doNothing().when(shopService).sellItem(anyInt(), anyDouble());
-        shopService.sell(new ItemQuantity(new Item(1, "Item1", 10.0, null, null), 1));
+        doNothing().when(shopService).sellItem(any(ItemQuantity.class));
+        shopService.sell(new ItemQuantity(new Item(1, "Item1", 10.0,
+                null, null), 1));
 
         // Act
         shopService.pay();
@@ -299,8 +301,9 @@ public class ShopServiceImplTests {
     @Test
     public void whenPay_thenAddReceiptAndSoldItemsMethodsAreCalled() {
         // Arrange
-        doNothing().when(shopService).sellItem(anyInt(), anyDouble());
-        shopService.sell(new ItemQuantity(new Item(1, "Item1", 10.0, null, null), 1));
+        doNothing().when(shopService).sellItem(any(ItemQuantity.class));
+        shopService.sell(new ItemQuantity(new Item(1, "Item1", 10.0,
+                null, null), 1));
 
         // Act
         shopService.pay();

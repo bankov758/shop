@@ -1,4 +1,4 @@
-package org.example.services;
+package org.example.helpers;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -7,6 +7,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.TextAlignment;
 import org.example.entities.ItemQuantity;
 import org.example.entities.Receipt;
+import org.example.services.ReceiptServiceImpl;
 import org.example.services.interfaces.ReceiptService;
 
 import java.time.format.DateTimeFormatter;

@@ -48,7 +48,7 @@ public class ShopServiceImpl implements ShopService {
             currentReceipt = new Receipt(receiptId++, cashier, shop);
         }
         receiptService.addItems(itemQuantity, getCurrentReceipt());
-        sellItem(itemQuantity.getItem().getId(), itemQuantity.getQuantity());
+        sellItem(itemQuantity);
     }
 
     @Override
@@ -67,10 +67,14 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public void sellItem(int itemId, double quantity) {
+    public void sellItem(ItemQuantity itemQuantity) {
+        String itemName = itemQuantity.getItem().getName();
+        int itemId = itemQuantity.getItem().getId();
+        double quantity = itemQuantity.getQuantity();
         ItemQuantity availableQuantity = shop.getDeliveredItems().get(itemId);
         if (availableQuantity == null || availableQuantity.getQuantity() < quantity) {
-            throw new ItemOutOfStockException(itemId);
+            double availableAmount = availableQuantity == null ? 0 : availableQuantity.getQuantity();
+            throw new ItemOutOfStockException(itemName, quantity - availableAmount);
         } else {
             shop.getDeliveredItems().get(itemId).reduceQuantity(quantity);
         }

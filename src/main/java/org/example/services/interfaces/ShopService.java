@@ -17,7 +17,7 @@ public interface ShopService {
 
     void addDeliveredItem(ItemQuantity itemQuantity);
 
-    void sellItem(int itemId, double quantity);
+    void sellItem(ItemQuantity itemQuantity);
 
     void addSoldItem(ItemQuantity itemQuantity);
 

@@ -5,7 +5,7 @@ import org.example.entities.Item;
 import org.example.entities.ItemQuantity;
 import org.example.entities.Shop;
 import org.example.helpers.MockDataGenerator;
-import org.example.services.ReceiptPrinter;
+import org.example.helpers.ReceiptPrinter;
 import org.example.services.interfaces.ShopService;
 import org.example.services.ShopServiceImpl;
 
