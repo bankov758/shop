@@ -2,6 +2,7 @@ package org.example.services.interfaces;
 
 import org.example.entities.ItemQuantity;
 import org.example.entities.Receipt;
+import org.example.exceptions.ItemOutOfStockException;
 
 import java.util.List;
 
@@ -13,11 +14,11 @@ public interface ShopService {
 
     void sell(ItemQuantity itemQuantity);
 
-    void pay();
+    Receipt pay();
 
     void addDeliveredItem(ItemQuantity itemQuantity);
 
-    void sellItem(ItemQuantity itemQuantity);
+    void sellItem(ItemQuantity itemQuantity) throws ItemOutOfStockException;
 
     void addSoldItem(ItemQuantity itemQuantity);
 

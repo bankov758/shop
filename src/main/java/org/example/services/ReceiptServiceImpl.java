@@ -2,11 +2,15 @@ package org.example.services;
 
 import org.example.entities.*;
 import org.example.exceptions.ItemOutOfDateException;
+import org.example.helpers.DateHelper;
+import org.example.helpers.NumberHelper;
 import org.example.services.interfaces.ReceiptService;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+
+import static org.example.helpers.NumberHelper.round;
 
 public class ReceiptServiceImpl implements ReceiptService {
 
@@ -29,7 +33,7 @@ public class ReceiptServiceImpl implements ReceiptService {
                 .toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
-        long daysBetween = -1 * ChronoUnit.DAYS.between(expirationDate, receipt.getPurchaseDate());
+        long daysBetween = DateHelper.getDayBetweenDates(expirationDate, receipt.getPurchaseDate());
         if (daysBetween < 0) {
             throw new ItemOutOfDateException(item.getName());
         }
@@ -46,10 +50,6 @@ public class ReceiptServiceImpl implements ReceiptService {
     private static double getDiscount(Receipt receipt, Item item) {
         return item.getCategory() == ItemCategory.FOOD ?
                 receipt.getShop().getFoodDiscountPercent() : receipt.getShop().getNonFoodDiscountPercent();
-    }
-
-    public static double round(double value, int precision) {
-        return Math.round(value * Math.pow(10.0, precision)) / Math.pow(10.0, precision);
     }
 
     @Override

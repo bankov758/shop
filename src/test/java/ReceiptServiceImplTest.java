@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.time.LocalDate.of;
-import static org.example.helpers.LocalDateToDate.convert;
+import static org.example.helpers.DateHelper.convertLocalDateToDate;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -35,7 +35,7 @@ public class ReceiptServiceImplTest {
     public void whenFoodCategoryItemHasValidExpirationDate_thenPriceIsCalculatedCorrectly() {
         // Arrange
         Item item = new Item(1, "Apple", 10.0,
-                ItemCategory.FOOD, convert(of(2024, 10, 20)));
+                ItemCategory.FOOD, convertLocalDateToDate(of(2024, 10, 20)));
         ItemQuantity itemQuantity = new ItemQuantity(item, 1);
         Shop shop = new Shop();
         shop.setFoodMarkupPercent(10);
@@ -55,7 +55,7 @@ public class ReceiptServiceImplTest {
     public void whenNonFoodCategoryItemHasValidExpirationDate_thenPriceIsCalculatedCorrectly() {
         // Arrange
         Item item = new Item(2, "Shampoo", 20.0, ItemCategory.NON_FOOD,
-                convert(of(2024, 10, 20)));
+                convertLocalDateToDate(of(2024, 10, 20)));
         ItemQuantity itemQuantity = new ItemQuantity(item, 1);
         Shop shop = new Shop();
         shop.setNonFoodMarkupPercent(15);
@@ -75,7 +75,7 @@ public class ReceiptServiceImplTest {
     public void whenFoodCategoryItemHasPastExpirationDate_thenItemOutOfDateExceptionIsThrown() {
         // Arrange
         Item item = new Item(5, "Milk", 1.5, ItemCategory.FOOD,
-                convert(of(2024, 10, 15)));
+                convertLocalDateToDate(of(2024, 10, 15)));
         ItemQuantity itemQuantity = new ItemQuantity(item, 1);
         Receipt receipt = new Receipt(5, new Cashier(),
                 of(2024, 10, 20).atStartOfDay(), List.of(itemQuantity), new Shop());
@@ -96,9 +96,9 @@ public class ReceiptServiceImplTest {
                 .getItemPrice(any(ItemQuantity.class), any(Receipt.class));
 
         Item item1 = new Item(1, "Apple", 1.0, ItemCategory.FOOD,
-                convert(of(2024, 10, 20)));
+                convertLocalDateToDate(of(2024, 10, 20)));
         Item item2 = new Item(2, "Banana", 0.5, ItemCategory.FOOD,
-                convert(of(2024, 10, 20)));
+                convertLocalDateToDate(of(2024, 10, 20)));
         ItemQuantity itemQuantity1 = new ItemQuantity(item1, 2);
         ItemQuantity itemQuantity2 = new ItemQuantity(item2, 3);
         List<ItemQuantity> itemQuantities = Arrays.asList(itemQuantity1, itemQuantity2);

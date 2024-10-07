@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import static java.time.LocalDate.of;
-import static org.example.helpers.LocalDateToDate.convert;
+import static org.example.helpers.DateHelper.convertLocalDateToDate;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -36,9 +36,9 @@ public class ShopServiceImplTests {
         // Arrange
         List<ItemQuantity> itemQuantities = List.of(
                 new ItemQuantity(new Item(1, "Item1", 10.0, ItemCategory.FOOD,
-                        convert(of(2024, 10, 15))), 5),
+                        convertLocalDateToDate(of(2024, 10, 15))), 5),
                 new ItemQuantity(new Item(2, "Item2", 15.0, ItemCategory.NON_FOOD,
-                        convert(of(2024, 10, 15))), 3)
+                        convertLocalDateToDate(of(2024, 10, 15))), 3)
         );
 
         // Act
@@ -53,7 +53,7 @@ public class ShopServiceImplTests {
     public void whenExistingItemQuantityUpdated_thenNewQuantityIsCorrect() {
         // Arrange
         Item item = new Item(1, "Item2", 15.0, ItemCategory.NON_FOOD,
-                convert(of(2024, 10, 15)));
+                convertLocalDateToDate(of(2024, 10, 15)));
         shop.getDeliveredItems().put(1, new ItemQuantity(item, 5));
         List<ItemQuantity> itemQuantities = List.of(
                 new ItemQuantity(item, 3)
@@ -290,12 +290,12 @@ public class ShopServiceImplTests {
                 null, null), 1));
 
         // Act
-        shopService.pay();
+        Receipt receipt = shopService.pay();
 
         // Assert
         assertNull(shopService.getCurrentReceipt());
-        assertNotNull(shop.getReceipts().get(0));
-        assertNotNull(shop.getReceipts().get(0).getPurchaseDate());
+        assertNotNull(receipt);
+        assertNotNull(receipt.getPurchaseDate());
     }
 
     @Test
