@@ -38,42 +38,42 @@ public class MockDataGenerator {
     public static Map<String, ItemQuantity> generateMockDeliveredItems() {
         Map<String, ItemQuantity> deliveredItems = new HashMap<>();
         deliveredItems.put("Milk", new ItemQuantity(
-                new Item(itemId++, "Milk", 5.0,
+                new Item(itemId++, "Milk", 3.0,
                         ItemCategory.FOOD,
                         DateHelper.convertLocalDateToDate(LocalDate.of(2024, 10, 15))),
                 8));
         deliveredItems.put("Chicken", new ItemQuantity(
                 new Item(itemId++, "Chicken", 5.0,
                         ItemCategory.FOOD,
-                        DateHelper.convertLocalDateToDate(LocalDate.of(2024, 10, 15))),
+                        DateHelper.convertLocalDateToDate(LocalDate.of(2024, 9, 15))),
                 250));
         deliveredItems.put("Pork", new ItemQuantity(
-                new Item(itemId++, "Pork", 5.0,
+                new Item(itemId++, "Pork", 7.0,
                         ItemCategory.FOOD,
                         DateHelper.convertLocalDateToDate(LocalDate.of(2024, 10, 15))),
                 250));
         deliveredItems.put("Cheese",new ItemQuantity(
-                new Item(itemId++, "Cheese", 5.0,
+                new Item(itemId++, "Cheese", 15.0,
                         ItemCategory.FOOD,
                         DateHelper.convertLocalDateToDate(LocalDate.of(2024, 10, 15))),
                 250));
         deliveredItems.put("Chocolate",new ItemQuantity(
-                new Item(itemId++, "Chocolate", 5.0,
+                new Item(itemId++, "Chocolate", 4.0,
                         ItemCategory.FOOD,
                         DateHelper.convertLocalDateToDate(LocalDate.of(2024, 10, 15))),
                 250));
         deliveredItems.put("Meds",new ItemQuantity(
-                new Item(itemId++, "Meds", 100.0,
+                new Item(itemId++, "Meds", 10.0,
                         ItemCategory.NON_FOOD,
                         DateHelper.convertLocalDateToDate(LocalDate.of(2025, 1, 1))),
                 20));
         deliveredItems.put("Toilet Paper",new ItemQuantity(
-                new Item(itemId++, "Toilet Paper", 100.0,
+                new Item(itemId++, "Toilet Paper", 4.5,
                         ItemCategory.NON_FOOD,
                         DateHelper.convertLocalDateToDate(LocalDate.of(2025, 1, 1))),
                 150));
         deliveredItems.put("Soap", new ItemQuantity(
-                new Item(itemId++, "Soap", 100.0,
+                new Item(itemId++, "Soap", 0.9,
                         ItemCategory.NON_FOOD,
                         DateHelper.convertLocalDateToDate(LocalDate.of(2025, 1, 1))),
                 300));

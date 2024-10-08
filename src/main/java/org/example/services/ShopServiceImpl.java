@@ -4,15 +4,12 @@ import org.example.entities.*;
 import org.example.exceptions.ItemOutOfStockException;
 import org.example.services.interfaces.ReceiptService;
 import org.example.services.interfaces.ShopService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class ShopServiceImpl implements ShopService {
 
-    private static final Logger log = LoggerFactory.getLogger(ShopServiceImpl.class);
     private final Shop shop;
 
     private final Cashier cashier;
